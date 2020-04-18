@@ -21,7 +21,7 @@ function depends_rtcw() {
 }
 
 function sources_rtcw() {
-    gitPullOrClone "$md_build" https://github.com/iortcw/iortcw.git
+    gitPullOrClone "$md_build" https://github.com/tacgnol3/iortcw.git
 }
 
 function build_rtcw() {
