@@ -44,7 +44,7 @@ function install_rtcw() {
 
 function game_data_rtcw() {
     mkdir "$home/.wolf/main"
-    wget "https://raw.githubusercontent.com/tpo1990/RTCW-RPI/master/wolfconfig.cfg"
+    wget "https://raw.githubusercontent.com/tacgnol3/RTCW-RPI/master/wolfconfig.cfg"
     mv wolfconfig.cfg "$home/.wolf/main"
     chown -R $user:$user "$romdir/ports/rtcw"
     chown -R $user:$user "$md_conf_root/rtcw-sp"
