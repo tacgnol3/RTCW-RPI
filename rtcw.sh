@@ -25,39 +25,54 @@ function sources_rtcw() {
 }
 
 function build_rtcw() {
-    cd "$md_build/SP"
-    ./make-raspberrypi.sh
-    cd "$md_build/MP"
-    ./make-raspberrypi.sh
-    md_ret_require="$md_build/SP"
-    md_ret_require="$md_build/MP"
+cd "$md_build/SP"
+USE_CODEC_VORBIS=0 USE_CODEC_OPUS=0 USE_CURL=0 USE_CURL_DLOPEN=0 USE_OPENAL=1 USE_OPENAL_DLOPEN=1 USE_RENDERER_DLOPEN=0 USE_VOIP=0 \
+USE_LOCAL_HEADERS=1 USE_INTERNAL_JPEG=1 USE_INTERNAL_OPUS=1 USE_INTERNAL_ZLIB=1 USE_OPENGLES=1 USE_BLOOM=0 USE_MUMBLE=0 BUILD_GAME_SO=1 \
+BUILD_RENDERER_REND2=0 ARCH=armv7l PLATFORM=linux COMPILE_ARCH=arm COMPILE_PLATFORM=linux \
+make
+cd "$md_build/MP"
+USE_CODEC_VORBIS=0 USE_CODEC_OPUS=0 USE_CURL=0 USE_CURL_DLOPEN=0 USE_OPENAL=1 USE_OPENAL_DLOPEN=1 USE_RENDERER_DLOPEN=0 USE_VOIP=0 \
+USE_LOCAL_HEADERS=1 USE_INTERNAL_JPEG=1 USE_INTERNAL_OPUS=1 USE_INTERNAL_ZLIB=1 USE_OPENGLES=1 USE_BLOOM=0 USE_MUMBLE=0 BUILD_GAME_SO=1 \
+BUILD_RENDERER_REND2=0 ARCH=armv7l PLATFORM=linux COMPILE_ARCH=arm COMPILE_PLATFORM=linux \
+make
+md_ret_require="$md_build/SP"
+md_ret_require="$md_build/MP"
 }
 
 function install_rtcw() {
     md_ret_files=(
-        'SP/build/release-linux-arm/iowolfsp.arm'
-        'SP/build/release-linux-arm/main/'
-        'MP/build/release-linux-arm/iowolfmp.arm'
-        'MP/build/release-linux-arm/main/'
+        'SP/build/release-linux-armv7l/iowolfsp.armv7l'
+        'SP/build/release-linux-armv7l/main/cgame.sp.armv7l.so'
+	'SP/build/release-linux-armv7l/main/qagame.sp.armv7l.so'
+	'SP/build/release-linux-armv7l/main/ui.sp.armv7l.so'
+        'MP/build/release-linux-armv7l/iowolfded.armv7l'
+	'MP/build/release-linux-armv7l/iowolfmp.armv7l'
+        'MP/build/release-linux-armv7l/main/cgame.mp.armv7l.so'
+	'MP/build/release-linux-armv7l/main/qagame.mp.armv7l.so'
+	'MP/build/release-linux-armv7l/main/ui.mp.armv7l.so'
+	'MP/build/release-linux-armv7l/main/vm/'
     )
 }
 
 function game_data_rtcw() {
-    mkdir "$home/.wolf/main"
-    wget "https://raw.githubusercontent.com/tacgnol3/RTCW-RPI/master/wolfconfig.cfg"
-    mv wolfconfig.cfg "$home/.wolf/main"
-    chown -R $user:$user "$romdir/ports/rtcw"
-    chown -R $user:$user "$md_conf_root/rtcw-sp"
+mkdir /opt/retropie/ports/rtcw/main
+mv /opt/retropie/ports/rtcw/*.so /opt/retropie/ports/rtcw/main
+mv /opt/retropie/ports/rtcw/vm /opt/retropie/ports/rtcw/main
+mkdir "$home/.wolf/main"
+#wget "https://raw.githubusercontent.com/tpo1990/RTCW-RPI/master/wolfconfig.cfg"
+#mv wolfconfig.cfg "$home/.wolf/main"
+chown -R $user:$user "$romdir/ports/rtcw"
+chown -R $user:$user "$md_conf_root/rtcw-sp"
 }
 
 function configure_rtcw() {
-    addPort "$md_id" "rtcw-sp" "Return to Castle Wolfenstein - SP" "$md_inst/iowolfsp.arm"
-    addPort "$md_id" "rtcw-mp" "Return to Castle Wolfenstein - MP" "$md_inst/iowolfmp.arm"
+addPort "rtcw-sp" "rtcw-sp" "Return to Castle Wolfenstein SP" "$md_inst/iowolfsp.armv7l"
+addPort "rtcw-mp" "rtcw-mp" "Return to Castle Wolfenstein MP" "$md_inst/iowolfmp.armv7l"
 
-    mkRomDir "ports/rtcw"
+mkRomDir "ports/rtcw"
 
-    moveConfigDir "$home/.wolf" "$md_conf_root/rtcw-sp"
-    moveConfigDir "$md_inst/main" "$romdir/ports/rtcw"
+moveConfigDir "$home/.wolf" "$md_conf_root/rtcw-sp"
+moveConfigDir "$md_inst/main" "$romdir/ports/rtcw"
 
-    [[ "$md_mode" == "install" ]] && game_data_rtcw
+[[ "$md_mode" == "install" ]] && game_data_rtcw
 }
